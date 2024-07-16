@@ -98,12 +98,24 @@ def func():
 def schedule_flight():
     print("Enter flight details: ")
     row = {}
+    while True:
+        row["Aeroplane_id"] = int(input("Aeroplane ID: "))
+        query = "SELECT * FROM AEROPLANE WHERE Aeroplane_id = %d" % (row["Aeroplane_id"])
+        cursor.execute(query)
+        result = cursor.fetchone()
+        if not result:
+            print("Aeroplane does not exist")
+            print("Enter c to continue or q to quit")
+            ch = input()
+            if(ch == 'q'):
+                exit()
+        else:
+            break
     row["Departure_city"] = input("Departure City: ")
     row["Arrival_city"] = input("Arrival City: ")
     row["Departure_date"] = input("Departure Date (YYYY-MM-DD): ")
     row["Departure_time"] = input("Departure Time (HH:MM:SS): ")
     row["Duration"] = input("Duration (HH:MM:SS): ")
-    row["Aeroplane_id"] = int(input("Aeroplane ID: "))
     query="INSERT INTO FLIGHT(departure_date, departure_time, Arrival_city, Departure_city, Aeroplane_id, Duration) VALUES('%s', '%s', '%s', '%s', %d, '%s')" % (
         row["Departure_date"], row["Departure_time"], row["Arrival_city"], row["Departure_city"], row["Aeroplane_id"], row["Duration"])
     cursor.execute(query)
@@ -323,9 +335,9 @@ def deletequery():
     print("2. Cancel a ticket")
     ch = int(input("Enter choice> "))
     if(ch==1):
-        option5canceltick()
+        cancel_flight()
     elif(ch==2):
-        option6remshop()
+        cancel_ticket()
 
 def update_passenger():
     while True:
@@ -363,7 +375,7 @@ def update_passenger():
     if (str == 'y'):
         print("Enter new Nationality: ")
         nationality = input()
-        query="UPDATE PASSANGER SET Nationality = '%s' WHERE Passenger_ID = %d" % (nationality, id)
+        query="UPDATE PASSENGER SET Nationality = '%s' WHERE Passenger_ID = %d" % (nationality, id)
         cursor.execute(query)
         connection.commit()
     print("Updated Passenger Details")
